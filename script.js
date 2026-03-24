@@ -1,5 +1,5 @@
 
-const faders = document.querySelectorAll('.fade-in
+const faders = document.querySelectorAll('.fade-in');
 
 const appearOptions = {
     threshold: 0.3
