@@ -20,15 +20,18 @@ faders.forEach(fader => {
 // Video hover播放
 const videoCard = document.querySelector('.video-card');
 
-if(videoCard){
+if (videoCard) {
     const video = videoCard.querySelector('.video-bg');
 
     videoCard.addEventListener('mouseenter', () => {
-        video.play();
+        video.currentTime = 0;
+        video.play().catch(() => {});
     });
 
     videoCard.addEventListener('mouseleave', () => {
         video.pause();
+        video.currentTime = 0;
     });
 }
+
 
