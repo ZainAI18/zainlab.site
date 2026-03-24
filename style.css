@@ -175,9 +175,9 @@ nav a:hover {
 
 /* 放大 + 发光 */
 .card:hover {
-    transform: scale(1.05) translateY(-3px);
-    background: #111827;
+    transform: scale(1.05);
     box-shadow: 0 0 30px rgba(0, 194, 255, 0.3);
+}
 }
 
 /* 发光边框 */
