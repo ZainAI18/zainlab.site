@@ -238,6 +238,11 @@ nav a:hover {
     opacity: 1;
 }
 
+.card-content {
+    position: relative;
+    z-index: 2;
+}
+
 /* CONTACT */
 .contact {
     text-align: center;
