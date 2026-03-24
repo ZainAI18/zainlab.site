@@ -165,10 +165,33 @@ nav a:hover {
 
 .card {
     background: #0F172A;
-    padding: 20px;
-    border-radius: 10px;
+    padding: 25px;
+    border-radius: 20px;
+    transition: all 0.35s ease;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+/* 放大 + 发光 */
+.card:hover {
+   transform: scale(1.05) translateY(-3px);
+}
+
+/* 发光边框 */
+.card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 20px;
+    padding: 1px;
+    background: linear-gradient(120deg, transparent, #00C2FF, transparent);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    opacity: 0;
     transition: 0.3s;
 }
+
 
 .card:hover {
     transform: translateY(-5px);
