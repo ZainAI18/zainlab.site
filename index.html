@@ -3,162 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="style.css">
+    
 <title>AI Product Studio</title>
-
-<style>
-/* RESET */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: "Inter", sans-serif;
-}
-
-body {
-    background: #05070D;
-    color: #fff;
-    line-height: 1.6;
-}
-
-/* CONTAINER */
-.container {
-    width: 90%;
-    max-width: 1200px;
-    margin: auto;
-}
-
-/* NAV */
-nav {
-    display: flex;
-    justify-content: space-between;
-    padding: 20px 0;
-    align-items: center;
-}
-
-.logo {
-    font-size: 20px;
-    font-weight: 600;
-    color: #00C2FF;
-}
-
-nav ul {
-    display: flex;
-    gap: 20px;
-}
-
-nav a {
-    color: #ccc;
-    text-decoration: none;
-    transition: 0.3s;
-}
-
-nav a:hover {
-    color: #fff;
-}
-
-/* HERO */
-.hero {
-    text-align: center;
-    padding: 100px 0;
-}
-
-.hero h1 {
-    font-size: 48px;
-    margin-bottom: 20px;
-}
-
-.hero p {
-    color: #aaa;
-    margin-bottom: 30px;
-}
-
-/* BUTTON */
-.btn {
-    padding: 12px 25px;
-    background: linear-gradient(90deg, #1A73FF, #00C2FF);
-    border: none;
-    color: #fff;
-    cursor: pointer;
-    border-radius: 30px;
-    transition: 0.3s;
-    text-decoration: none;
-}
-
-.btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 0 20px rgba(0, 194, 255, 0.6);
-}
-
-/* SECTION */
-.section {
-    padding: 80px 0;
-}
-
-.section h2 {
-    text-align: center;
-    margin-bottom: 40px;
-}
-
-/* GRID */
-.grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
-}
-
-.card {
-    background: #0F172A;
-    padding: 20px;
-    border-radius: 10px;
-    transition: 0.3s;
-}
-
-.card:hover {
-    transform: translateY(-5px);
-    background: #111827;
-}
-
-/* CONTACT */
-.contact {
-    text-align: center;
-}
-
-/* WHATSAPP FLOAT */
-.whatsapp {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: #25D366;
-    color: white;
-    padding: 15px;
-    border-radius: 50%;
-    font-size: 20px;
-    text-decoration: none;
-}
-
-/* ANIMATION */
-.fade-in {
-    opacity: 0;
-    transform: translateY(20px);
-    transition: 1s;
-}
-
-.fade-in.show {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-/* RESPONSIVE */
-@media(max-width: 768px) {
-    .grid {
-        grid-template-columns: 1fr;
-    }
-
-    .hero h1 {
-        font-size: 32px;
-    }
-}
-</style>
 </head>
 
 <body>
@@ -180,6 +27,32 @@ nav a:hover {
     <h1>Turn Your Products Into Premium Sales Assets</h1>
     <p>AI-powered catalogs, videos, and visuals for industrial businesses</p>
     <a href="#contact" class="btn">Get Free Sample</a>
+</section>
+
+<section class="feature-section fade-in">
+    <h2 style="text-align:center; margin-bottom:40px;">What We Do</h2>
+
+    <div class="feature-grid">
+
+        <!-- Catalog -->
+        <div class="feature-card">
+            <h3>Catalog</h3>
+            <p>Professional product catalogs designed to improve clarity and boost sales.</p>
+        </div>
+
+        <!-- Video -->
+        <div class="feature-card">
+            <h3>Video</h3>
+            <p>AI-generated product videos that present your products like premium brands.</p>
+        </div>
+
+        <!-- Website -->
+        <div class="feature-card">
+            <h3>Website</h3>
+            <p>Clean, high-converting websites built to showcase your products effectively.</p>
+        </div>
+
+    </div>
 </section>
 
 <!-- SERVICES -->
