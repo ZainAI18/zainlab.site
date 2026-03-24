@@ -199,6 +199,59 @@ nav a:hover {
     opacity: 1;
 }
 
+/* VIDEO CARD 特殊处理 */
+.video-card {
+    position: relative;
+    overflow: hidden;
+}
+
+/* 静态图片 */
+.video-cover {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    top: 0;
+    left: 0;
+    opacity: 1;
+    transition: opacity 0.4s ease;
+}
+
+/* 视频背景 */
+.video-bg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+/* hover切换 */
+.video-card:hover .video-cover {
+    opacity: 0;
+}
+
+.video-card:hover .video-bg {
+    opacity: 1;
+}
+
+/* 文字保持在上层 */
+.card-content {
+    position: relative;
+    z-index: 2;
+}
+
+/* 加一层暗色遮罩（让文字清楚） */
+.video-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(5, 7, 13, 0.6);
+    z-index: 1;
+}
 /* CONTACT */
 .contact {
     text-align: center;
