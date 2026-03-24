@@ -1,4 +1,4 @@
-<script>
+
 const faders = document.querySelectorAll('.fade-in');
 
 const appearOptions = {
@@ -31,4 +31,4 @@ if(videoCard){
         video.pause();
     });
 }
-</script>
+
