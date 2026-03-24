@@ -246,11 +246,12 @@ nav a:hover {
 
 /* 加一层暗色遮罩（让文字清楚） */
 .video-card::after {
-    content: "";
-    position: absolute;
-    inset: 0;
     background: rgba(5, 7, 13, 0.6);
-    z-index: 1;
+    transition: 0.4s;
+}
+
+.video-card:hover::after {
+    background: rgba(5, 7, 13, 0.2);
 }
 /* CONTACT */
 .contact {
