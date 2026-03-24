@@ -1,5 +1,5 @@
 
-const faders = document.querySelectorAll('.fade-in');
+const faders = document.querySelectorAll('.fade-in
 
 const appearOptions = {
     threshold: 0.3
@@ -21,7 +21,7 @@ faders.forEach(fader => {
 const videoCard = document.querySelector('.video-card');
 
 if(videoCard){
-    const video = videoCard.querySelector('video');
+    const video = videoCard.querySelector('.video-bg');
 
     videoCard.addEventListener('mouseenter', () => {
         video.play();
