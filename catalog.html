@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="catalog.css?v=5">
+  <link rel="stylesheet" href="catalog.css?v=6">
   <title>Catalog Design Services</title>
 </head>
 <body>
@@ -22,60 +22,94 @@
 
     <main>
       <section class="catalog-hero">
+        <p class="eyebrow">Interactive Catalog System</p>
         <h1>Catalog Design Services</h1>
-        <p>Place your three catalog versions here. Hover any card to zoom in and focus on the full preview.</p>
+        <p>Preview on hover. Click to open a focused catalog view with the full story on the back.</p>
         <a href="index.html" class="btn">Back Home</a>
       </section>
 
-      <section class="catalog-grid" id="catalog-grid">
-        <article class="catalog-item" data-card>
-          <h3>Catalog 01</h3>
-          <div class="flip-scene">
-            <div class="catalog-card">
-              <div class="card-content">
-                <span class="card-kicker">Cover</span>
-                <h4>Industrial Product Line</h4>
-                <p>Hover to zoom this catalog into focus.</p>
+      <section class="catalog-grid" id="catalog-grid" aria-label="Catalog examples">
+        <article class="catalog-item">
+          <div class="card" data-card tabindex="0" aria-label="Open Industrial Product Line catalog">
+            <div class="card-inner">
+              <div class="card-front">
+                <img src="Banboo.png" alt="Industrial product catalog cover">
+                <video autoplay muted loop playsinline preload="metadata" aria-hidden="true">
+                  <source src="Banboo-Video.mp4" type="video/mp4">
+                </video>
+                <div class="front-copy">
+                  <span>Catalog 01</span>
+                  <h3>Industrial Product Line</h3>
+                  <p>Sales-ready pages for technical buyers.</p>
+                </div>
+              </div>
+              <div class="card-back">
+                <button class="close-card" type="button" aria-label="Close catalog">Close</button>
+                <span class="card-kicker">Catalog 01</span>
+                <h3>Industrial Product Line</h3>
+                <p>Built for teams that need premium product presentation without losing the practical details buyers ask for.</p>
                 <ul>
-                  <li>Large product visuals</li>
-                  <li>Technical specs and dimensions</li>
-                  <li>Strong call to action</li>
+                  <li>Large product visuals with clear hierarchy</li>
+                  <li>Technical specs, dimensions, and ordering cues</li>
+                  <li>Layouts ready for PDF, WhatsApp, and sales decks</li>
                 </ul>
               </div>
             </div>
           </div>
         </article>
 
-        <article class="catalog-item" data-card>
-          <h3>Catalog 02</h3>
-          <div class="flip-scene">
-            <div class="catalog-card">
-              <div class="card-content">
-                <span class="card-kicker">Cover</span>
-                <h4>Construction Series</h4>
-                <p>Hover to zoom this catalog into focus.</p>
+        <article class="catalog-item">
+          <div class="card" data-card tabindex="0" aria-label="Open Construction Series catalog">
+            <div class="card-inner">
+              <div class="card-front">
+                <img src="Banboo.png" alt="Construction series catalog cover">
+                <video autoplay muted loop playsinline preload="metadata" aria-hidden="true">
+                  <source src="Banboo-Video.mp4" type="video/mp4">
+                </video>
+                <div class="front-copy">
+                  <span>Catalog 02</span>
+                  <h3>Construction Series</h3>
+                  <p>Application-focused pages for project teams.</p>
+                </div>
+              </div>
+              <div class="card-back">
+                <button class="close-card" type="button" aria-label="Close catalog">Close</button>
+                <span class="card-kicker">Catalog 02</span>
+                <h3>Construction Series</h3>
+                <p>Designed to make product use cases obvious at a glance, then support decisions with durable proof points.</p>
                 <ul>
-                  <li>Application scenarios</li>
-                  <li>Material and durability details</li>
-                  <li>Contact or ordering info</li>
+                  <li>Use-case spreads for quick buyer alignment</li>
+                  <li>Material, finish, and durability callouts</li>
+                  <li>Contact, ordering, and installation details</li>
                 </ul>
               </div>
             </div>
           </div>
         </article>
 
-        <article class="catalog-item" data-card>
-          <h3>Catalog 03</h3>
-          <div class="flip-scene">
-            <div class="catalog-card">
-              <div class="card-content">
-                <span class="card-kicker">Cover</span>
-                <h4>Premium Hardware Set</h4>
-                <p>Hover to zoom this catalog into focus.</p>
+        <article class="catalog-item">
+          <div class="card" data-card tabindex="0" aria-label="Open Premium Hardware Set catalog">
+            <div class="card-inner">
+              <div class="card-front">
+                <img src="Banboo.png" alt="Premium hardware catalog cover">
+                <video autoplay muted loop playsinline preload="metadata" aria-hidden="true">
+                  <source src="Banboo-Video.mp4" type="video/mp4">
+                </video>
+                <div class="front-copy">
+                  <span>Catalog 03</span>
+                  <h3>Premium Hardware Set</h3>
+                  <p>Polished catalog pages for premium positioning.</p>
+                </div>
+              </div>
+              <div class="card-back">
+                <button class="close-card" type="button" aria-label="Close catalog">Close</button>
+                <span class="card-kicker">Catalog 03</span>
+                <h3>Premium Hardware Set</h3>
+                <p>A cleaner, more confident catalog treatment for products that need to feel high-value before a buyer compares price.</p>
                 <ul>
-                  <li>Case studies and results</li>
-                  <li>Installation workflow</li>
-                  <li>After-sales support details</li>
+                  <li>Premium visual system and product grouping</li>
+                  <li>Case study sections and outcome highlights</li>
+                  <li>After-sales support and warranty messaging</li>
                 </ul>
               </div>
             </div>
@@ -85,6 +119,6 @@
     </main>
   </div>
   <div class="catalog-overlay" id="catalog-overlay" aria-hidden="true"></div>
-  <script src="catalog.js?v=5"></script>
+  <script src="catalog.js?v=6"></script>
 </body>
 </html>
