@@ -5,6 +5,7 @@ const overlay = document.getElementById("catalog-overlay");
 let activeCard = null;
 const openTimers = new WeakMap();
 const HOVER_DELAY_MS = 180;
+const CLOSE_DELAY_MS = 220;
 
 const clearTimer = (card) => {
     const timer = openTimers.get(card);
@@ -17,11 +18,16 @@ const clearTimer = (card) => {
 const closeActiveCard = () => {
     if (!activeCard) return;
     clearTimer(activeCard);
-    activeCard.classList.remove("expanded");
+    const cardToClose = activeCard;
+    cardToClose.classList.remove("expanded-visible");
     grid?.classList.remove("has-active");
     overlay?.classList.remove("visible");
     overlay?.setAttribute("aria-hidden", "true");
     activeCard = null;
+
+    setTimeout(() => {
+        cardToClose.classList.remove("expanded");
+    }, CLOSE_DELAY_MS);
 };
 
 const openCard = (card) => {
@@ -34,6 +40,9 @@ const openCard = (card) => {
         grid?.classList.add("has-active");
         overlay?.classList.add("visible");
         overlay?.setAttribute("aria-hidden", "false");
+        requestAnimationFrame(() => {
+            card.classList.add("expanded-visible");
+        });
     });
 };
 
@@ -55,3 +64,11 @@ overlay?.addEventListener("click", closeActiveCard);
 window.addEventListener("keydown", (event) => {
     if (event.key === "Escape") closeActiveCard();
 });
+
+/* Legacy interaction kept for future reuse (card1 flip version):
+const HOVER_DELAY_MS = 180;
+const openCard = (card) => {
+    card.classList.add("expanded");
+    // Old behavior used rotateY flip animation.
+};
+*/
