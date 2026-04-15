@@ -4,7 +4,7 @@ const overlay = document.getElementById("catalog-overlay");
 
 let activeCard = null;
 const openTimers = new WeakMap();
-const HOVER_DELAY_MS = 220;
+const HOVER_DELAY_MS = 180;
 
 const clearTimer = (card) => {
     const timer = openTimers.get(card);
@@ -29,10 +29,12 @@ const openCard = (card) => {
     if (activeCard) closeActiveCard();
 
     activeCard = card;
-    card.classList.add("expanded");
-    grid?.classList.add("has-active");
-    overlay?.classList.add("visible");
-    overlay?.setAttribute("aria-hidden", "false");
+    requestAnimationFrame(() => {
+        card.classList.add("expanded");
+        grid?.classList.add("has-active");
+        overlay?.classList.add("visible");
+        overlay?.setAttribute("aria-hidden", "false");
+    });
 };
 
 cards.forEach((card) => {

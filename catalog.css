@@ -147,7 +147,8 @@ main {
     border-radius: 18px;
     padding: 14px;
     position: relative;
-    transition: opacity 0.35s ease, filter 0.35s ease;
+    transition: opacity 0.28s ease, transform 0.28s ease;
+    will-change: opacity, transform;
 }
 
 .catalog-item h3 {
@@ -171,8 +172,10 @@ main {
     height: 100%;
     border-radius: 14px;
     transform-style: preserve-3d;
-    transition: transform 0.8s ease, width 0.5s ease, height 0.5s ease, top 0.5s ease, left 0.5s ease;
+    transition: transform 0.68s cubic-bezier(0.22, 0.61, 0.36, 1), width 0.42s ease, height 0.42s ease, top 0.42s ease, left 0.42s ease;
     box-shadow: 0 14px 34px rgba(0, 0, 0, 0.26);
+    will-change: transform, width, height, top, left;
+    transform: translate3d(0, 0, 0);
 }
 
 .card-face {
@@ -182,9 +185,11 @@ main {
     border: 1px solid rgba(159, 176, 208, 0.22);
     border-radius: 12px;
     backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
+    will-change: transform, opacity;
 }
 
 .card-front {
@@ -229,8 +234,8 @@ main {
 }
 
 .catalog-grid.has-active .catalog-item:not(.expanded) {
-    opacity: 0.3;
-    filter: blur(2px);
+    opacity: 0.38;
+    transform: scale(0.985);
 }
 
 .catalog-item.expanded {
@@ -245,7 +250,7 @@ main {
     max-height: 840px;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%) rotateY(-180deg);
+    transform: translate3d(-50%, -50%, 0) rotateY(-180deg);
     z-index: 21;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
 }
@@ -266,15 +271,25 @@ main {
     visibility: hidden;
     transition: opacity 0.35s ease;
     z-index: 15;
+    pointer-events: none;
 }
 
 .catalog-overlay.visible {
     opacity: 1;
     visibility: visible;
+    pointer-events: auto;
 }
 
 .catalog-item:hover:not(.expanded) .catalog-card {
-    transform: rotateY(-165deg);
+    transform: translate3d(0, 0, 0) rotateY(-165deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .catalog-card,
+    .catalog-item,
+    .catalog-overlay {
+        transition: none;
+    }
 }
 
 @media (max-width: 980px) {
