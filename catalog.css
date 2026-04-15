@@ -134,9 +134,11 @@ main {
 }
 
 .catalog-grid {
+    position: relative;
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 12px;
+    gap: 14px;
+    perspective: 1200px;
 }
 
 .catalog-item {
@@ -144,85 +146,135 @@ main {
     border: 1px solid rgba(159, 176, 208, 0.18);
     border-radius: 18px;
     padding: 14px;
+    position: relative;
+    transition: opacity 0.35s ease, filter 0.35s ease;
 }
 
 .catalog-item h3 {
     margin-bottom: 10px;
 }
 
-.book-stage {
-    background: radial-gradient(circle at 0% 0%, rgba(39, 212, 255, 0.2), transparent 35%), var(--surface);
-    border: 1px solid rgba(159, 176, 208, 0.2);
-    border-radius: 14px;
-    padding: 12px;
+.flip-scene {
+    position: relative;
+    width: 100%;
+    max-width: 300px;
+    height: 360px;
+    margin: 0 auto;
     perspective: 1200px;
 }
 
-.book {
-    position: relative;
+.catalog-card {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
-    height: 300px;
+    height: 100%;
+    border-radius: 14px;
     transform-style: preserve-3d;
+    transition: transform 0.8s ease, width 0.5s ease, height 0.5s ease, top 0.5s ease, left 0.5s ease;
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.26);
 }
 
-.page {
+.card-face {
     position: absolute;
     inset: 0;
-    border-radius: 12px;
+    padding: 20px 18px;
     border: 1px solid rgba(159, 176, 208, 0.22);
-    background: linear-gradient(150deg, #f8fbff 0%, #e7edf9 100%);
-    color: #1f2b45;
-    padding: 18px 14px;
-    transform-origin: left center;
-    transition: transform 0.55s ease, box-shadow 0.35s ease;
+    border-radius: 12px;
+    backface-visibility: hidden;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    box-shadow: 0 8px 16px rgba(2, 6, 23, 0.2);
-    backface-visibility: hidden;
 }
 
-.page-label {
-    font-size: 0.72rem;
+.card-front {
+    background: linear-gradient(145deg, #1f3a78 0%, #111f3f 70%);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+.card-back {
+    background: linear-gradient(150deg, #f8fbff 0%, #e7edf9 100%);
+    color: #1f2b45;
+    transform: rotateY(180deg);
+}
+
+.card-kicker {
+    font-size: 0.75rem;
     text-transform: uppercase;
-    letter-spacing: 0.8px;
-    color: #4f8cff;
+    letter-spacing: 1px;
+    color: #c3d7ff;
     margin-bottom: 6px;
     font-weight: 700;
 }
 
-.page strong {
-    font-size: 1.02rem;
-    margin-bottom: 4px;
+.card-face h4 {
+    font-size: 1.3rem;
+    margin-bottom: 8px;
 }
 
-.page small {
-    color: #475569;
+.card-face p {
+    color: rgba(248, 250, 252, 0.84);
 }
 
-.page.flipped {
-    transform: rotateY(-165deg);
-    box-shadow: -2px 8px 14px rgba(2, 6, 23, 0.2);
+.card-back p {
+    color: #334155;
+    margin-bottom: 10px;
 }
 
-.book-controls {
-    margin-top: 10px;
+.card-back ul {
+    padding-left: 18px;
+    color: #334155;
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
+    gap: 6px;
 }
 
-.book-controls button {
-    border: 1px solid rgba(159, 176, 208, 0.32);
-    background: var(--surface-alt);
-    color: var(--text);
-    border-radius: 10px;
-    padding: 8px 10px;
-    cursor: pointer;
+.catalog-grid.has-active .catalog-item:not(.expanded) {
+    opacity: 0.3;
+    filter: blur(2px);
 }
 
-.book-controls button:hover {
-    border-color: rgba(39, 212, 255, 0.6);
+.catalog-item.expanded {
+    z-index: 20;
+}
+
+.catalog-item.expanded .catalog-card {
+    position: fixed;
+    width: 80vw;
+    height: 80vh;
+    max-width: 1200px;
+    max-height: 840px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotateY(-180deg);
+    z-index: 21;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.catalog-item.expanded .card-front {
+    opacity: 0;
+}
+
+.catalog-item.expanded .card-back {
+    overflow: auto;
+}
+
+.catalog-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.35s ease;
+    z-index: 15;
+}
+
+.catalog-overlay.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.catalog-item:hover:not(.expanded) .catalog-card {
+    transform: rotateY(-165deg);
 }
 
 @media (max-width: 980px) {
@@ -240,5 +292,10 @@ main {
 
     .catalog-grid {
         grid-template-columns: 1fr;
+    }
+
+    .catalog-item.expanded .catalog-card {
+        width: 92vw;
+        height: 82vh;
     }
 }

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="catalog.css?v=2">
+  <link rel="stylesheet" href="catalog.css?v=3">
   <title>Catalog Design Services</title>
 </head>
 <body>
@@ -27,105 +27,76 @@
         <a href="index.html" class="btn">Back Home</a>
       </section>
 
-      <section class="catalog-grid">
-        <article class="catalog-item">
+      <section class="catalog-grid" id="catalog-grid">
+        <article class="catalog-item" data-card>
           <h3>Catalog 01</h3>
-          <div class="book-stage">
-            <div class="book" data-book>
-              <div class="page">
-                <span class="page-label">Cover</span>
-                <strong>Your Cover</strong>
-                <small>Drop your product cover image here</small>
+          <div class="flip-scene">
+            <div class="catalog-card">
+              <div class="card-face card-front">
+                <span class="card-kicker">Cover</span>
+                <h4>Industrial Product Line</h4>
+                <p>Hover for immersive preview</p>
               </div>
-              <div class="page">
-                <span class="page-label">Page 1</span>
-                <strong>Inside Page</strong>
-                <small>Product details / feature highlights</small>
-              </div>
-              <div class="page">
-                <span class="page-label">Page 2</span>
-                <strong>Applications</strong>
-                <small>Use case and technical specifications</small>
-              </div>
-              <div class="page">
-                <span class="page-label">Back</span>
-                <strong>Contact Page</strong>
-                <small>Company profile and call to action</small>
+              <div class="card-face card-back">
+                <h4>Expanded Content</h4>
+                <p>Use this area for your full catalog page spread, details, and feature sections.</p>
+                <ul>
+                  <li>Large product visuals</li>
+                  <li>Technical specs and dimensions</li>
+                  <li>Strong call to action</li>
+                </ul>
               </div>
             </div>
           </div>
-          <div class="book-controls">
-            <button type="button" data-prev>Prev</button>
-            <button type="button" data-next>Next</button>
-          </div>
         </article>
 
-        <article class="catalog-item">
+        <article class="catalog-item" data-card>
           <h3>Catalog 02</h3>
-          <div class="book-stage">
-            <div class="book" data-book>
-              <div class="page">
-                <span class="page-label">Cover</span>
-                <strong>Your Cover</strong>
-                <small>Drop your product cover image here</small>
+          <div class="flip-scene">
+            <div class="catalog-card">
+              <div class="card-face card-front">
+                <span class="card-kicker">Cover</span>
+                <h4>Construction Series</h4>
+                <p>Hover for immersive preview</p>
               </div>
-              <div class="page">
-                <span class="page-label">Page 1</span>
-                <strong>Inside Page</strong>
-                <small>Product details / feature highlights</small>
-              </div>
-              <div class="page">
-                <span class="page-label">Page 2</span>
-                <strong>Applications</strong>
-                <small>Use case and technical specifications</small>
-              </div>
-              <div class="page">
-                <span class="page-label">Back</span>
-                <strong>Contact Page</strong>
-                <small>Company profile and call to action</small>
+              <div class="card-face card-back">
+                <h4>Expanded Content</h4>
+                <p>Use this area for your full catalog page spread, details, and feature sections.</p>
+                <ul>
+                  <li>Application scenarios</li>
+                  <li>Material and durability details</li>
+                  <li>Contact or ordering info</li>
+                </ul>
               </div>
             </div>
-          </div>
-          <div class="book-controls">
-            <button type="button" data-prev>Prev</button>
-            <button type="button" data-next>Next</button>
           </div>
         </article>
 
-        <article class="catalog-item">
+        <article class="catalog-item" data-card>
           <h3>Catalog 03</h3>
-          <div class="book-stage">
-            <div class="book" data-book>
-              <div class="page">
-                <span class="page-label">Cover</span>
-                <strong>Your Cover</strong>
-                <small>Drop your product cover image here</small>
+          <div class="flip-scene">
+            <div class="catalog-card">
+              <div class="card-face card-front">
+                <span class="card-kicker">Cover</span>
+                <h4>Premium Hardware Set</h4>
+                <p>Hover for immersive preview</p>
               </div>
-              <div class="page">
-                <span class="page-label">Page 1</span>
-                <strong>Inside Page</strong>
-                <small>Product details / feature highlights</small>
-              </div>
-              <div class="page">
-                <span class="page-label">Page 2</span>
-                <strong>Applications</strong>
-                <small>Use case and technical specifications</small>
-              </div>
-              <div class="page">
-                <span class="page-label">Back</span>
-                <strong>Contact Page</strong>
-                <small>Company profile and call to action</small>
+              <div class="card-face card-back">
+                <h4>Expanded Content</h4>
+                <p>Use this area for your full catalog page spread, details, and feature sections.</p>
+                <ul>
+                  <li>Case studies and results</li>
+                  <li>Installation workflow</li>
+                  <li>After-sales support details</li>
+                </ul>
               </div>
             </div>
-          </div>
-          <div class="book-controls">
-            <button type="button" data-prev>Prev</button>
-            <button type="button" data-next>Next</button>
           </div>
         </article>
       </section>
     </main>
   </div>
-  <script src="catalog.js?v=2"></script>
+  <div class="catalog-overlay" id="catalog-overlay" aria-hidden="true"></div>
+  <script src="catalog.js?v=3"></script>
 </body>
 </html>
