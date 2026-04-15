@@ -1,12 +1,12 @@
 :root {
-    --bg: #060b18;
-    --surface: #0e162d;
-    --surface-alt: #121d39;
-    --line: rgba(122, 159, 255, 0.24);
-    --text: #f8fafc;
-    --muted: #9fb0d0;
-    --brand-1: #4f8cff;
-    --brand-2: #27d4ff;
+    --bg: #101316;
+    --panel: #171b1f;
+    --panel-strong: #20262a;
+    --line: rgba(236, 240, 242, 0.16);
+    --text: #f5f7f8;
+    --muted: #aab4b9;
+    --accent: #1fbf9f;
+    --accent-strong: #e34d4d;
 }
 
 * {
@@ -22,14 +22,18 @@ body {
     background: var(--bg);
 }
 
+body.is-locked {
+    overflow: hidden;
+}
+
 .page-bg {
     position: fixed;
     inset: 0;
     z-index: -1;
     background:
-        radial-gradient(circle at 10% 10%, rgba(39, 212, 255, 0.15), transparent 32%),
-        radial-gradient(circle at 85% 10%, rgba(79, 140, 255, 0.15), transparent 30%),
-        linear-gradient(180deg, #070d1d 0%, #050914 100%);
+        linear-gradient(135deg, rgba(31, 191, 159, 0.14), transparent 34%),
+        linear-gradient(315deg, rgba(227, 77, 77, 0.13), transparent 38%),
+        #101316;
 }
 
 .container {
@@ -40,10 +44,10 @@ body {
 header {
     position: sticky;
     top: 0;
-    z-index: 10;
-    background: rgba(6, 11, 24, 0.76);
+    z-index: 20;
+    background: rgba(16, 19, 22, 0.78);
     backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(159, 176, 208, 0.18);
+    border-bottom: 1px solid var(--line);
 }
 
 nav {
@@ -71,8 +75,8 @@ nav a {
     transition: all 0.3s ease;
     font-weight: 600;
     border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.08);
     padding: 8px 16px;
     display: inline-flex;
     align-items: center;
@@ -83,7 +87,7 @@ nav a {
 
 nav a:hover {
     color: #fff;
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.16);
     transform: scale(1.05);
 }
 
@@ -99,16 +103,25 @@ nav a.active {
 }
 
 main {
-    padding: 20px 0 30px;
+    padding: 20px 0 34px;
 }
 
 .catalog-hero {
-    background: linear-gradient(180deg, rgba(13, 20, 40, 0.86), rgba(9, 15, 30, 0.95));
+    background: rgba(23, 27, 31, 0.86);
     border: 1px solid var(--line);
-    border-radius: 20px;
+    border-radius: 8px;
     text-align: center;
     padding: 26px;
     margin-bottom: 14px;
+}
+
+.eyebrow {
+    color: var(--accent);
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    margin-bottom: 8px;
 }
 
 .catalog-hero h1 {
@@ -116,9 +129,10 @@ main {
     margin-bottom: 8px;
 }
 
-.catalog-hero p {
+.catalog-hero p:not(.eyebrow) {
     color: var(--muted);
-    margin-bottom: 16px;
+    margin: 0 auto 16px;
+    max-width: 620px;
 }
 
 .btn {
@@ -126,134 +140,205 @@ main {
     align-items: center;
     justify-content: center;
     padding: 10px 20px;
-    border-radius: 999px;
+    border-radius: 8px;
     text-decoration: none;
-    color: #fff;
-    font-weight: 600;
-    background: linear-gradient(90deg, var(--brand-1), var(--brand-2));
+    color: #0d1112;
+    font-weight: 800;
+    background: var(--accent);
 }
 
 .catalog-grid {
     position: relative;
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 14px;
+    gap: 16px;
     perspective: 1200px;
 }
 
 .catalog-item {
-    background: linear-gradient(180deg, rgba(13, 20, 40, 0.86), rgba(9, 15, 30, 0.95));
-    border: 1px solid rgba(159, 176, 208, 0.18);
-    border-radius: 18px;
-    padding: 14px;
-    position: relative;
-    transition: opacity 0.28s ease, transform 0.28s ease;
-    will-change: opacity, transform;
+    min-height: 420px;
+    transition: opacity 0.28s ease, filter 0.28s ease;
 }
 
-.catalog-item h3 {
-    margin-bottom: 10px;
+.catalog-grid.has-active .catalog-item:not(.is-active) {
+    opacity: 0.2;
+    filter: blur(4px);
+    pointer-events: none;
 }
 
-.flip-scene {
+.card {
     position: relative;
     width: 100%;
-    max-width: 300px;
-    height: 360px;
-    margin: 0 auto;
+    height: 420px;
+    border-radius: 8px;
+    cursor: pointer;
     perspective: 1200px;
-    overflow: visible;
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease,
+        opacity 0.3s ease,
+        width 0.5s ease,
+        height 0.5s ease,
+        top 0.5s ease,
+        left 0.5s ease;
+    z-index: 1;
+    will-change: transform;
 }
 
-.catalog-card {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border-radius: 14px;
-    transition: transform 0.46s cubic-bezier(0.22, 0.61, 0.36, 1), opacity 0.25s ease;
-    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.26);
-    will-change: transform, opacity;
-    transform: translate3d(0, 0, 0);
-    background: linear-gradient(145deg, #1f3a78 0%, #111f3f 70%);
-    border: 1px solid rgba(159, 176, 208, 0.22);
-    overflow: hidden;
+.card.previewing:not(.active) {
+    transform: scale(1.05);
+    z-index: 10;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
-.card-content {
+.card.active {
+    position: fixed;
+    top: var(--start-top);
+    left: var(--start-left);
+    width: var(--start-width);
+    height: var(--start-height);
+    z-index: 1000;
+    transform: translate(0, 0);
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5);
+    cursor: default;
+}
+
+.card.active.expanded {
+    top: 50%;
+    left: 50%;
+    width: 80vw;
+    height: 80vh;
+    transform: translate(-50%, -50%);
+}
+
+.card-inner {
     position: relative;
     width: 100%;
     height: 100%;
-    padding: 20px 18px;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
+    border-radius: 8px;
+    transform-style: preserve-3d;
+    transition: transform 0.8s ease;
+}
+
+.card.active.flipped .card-inner {
+    transform: rotateY(-180deg);
+}
+
+.card-front,
+.card-back {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--panel);
+    backface-visibility: hidden;
+}
+
+.card-front img,
+.card-front video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.card-front video {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.card.previewing .card-front video,
+.card.active .card-front video {
+    opacity: 1;
+}
+
+.card-front::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 26%, rgba(0, 0, 0, 0.84) 100%);
+}
+
+.front-copy {
+    position: absolute;
+    left: 18px;
+    right: 18px;
+    bottom: 18px;
+    z-index: 1;
+    display: grid;
     gap: 8px;
 }
 
+.front-copy span,
 .card-kicker {
-    font-size: 0.75rem;
+    color: var(--accent);
+    font-size: 0.78rem;
+    font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 1px;
-    color: #c3d7ff;
-    margin-bottom: 6px;
-    font-weight: 700;
+    letter-spacing: 0;
 }
 
-.card-content h4 {
-    font-size: 1.3rem;
+.front-copy h3,
+.card-back h3 {
+    font-size: clamp(1.25rem, 2.2vw, 2.1rem);
+    line-height: 1.12;
 }
 
-.card-content p {
-    color: rgba(248, 250, 252, 0.84);
+.front-copy p,
+.card-back p,
+.card-back li {
+    color: rgba(245, 247, 248, 0.84);
+    line-height: 1.55;
 }
 
-.card-content ul {
-    padding-left: 18px;
-    color: rgba(248, 250, 252, 0.86);
+.card-back {
+    transform: rotateY(180deg);
+    padding: clamp(22px, 5vw, 60px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 16px;
+    background:
+        linear-gradient(135deg, rgba(31, 191, 159, 0.12), transparent 36%),
+        linear-gradient(315deg, rgba(227, 77, 77, 0.14), transparent 42%),
+        var(--panel-strong);
+}
+
+.card-back ul {
     display: grid;
-    gap: 6px;
+    gap: 10px;
+    padding-left: 20px;
+    max-width: 720px;
 }
 
-.catalog-grid.has-active .catalog-item:not(.expanded) {
-    opacity: 0.3;
-    filter: blur(1.5px);
+.close-card {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 3;
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.34);
+    color: #fff;
+    cursor: pointer;
+    font-weight: 800;
+    padding: 10px 14px;
 }
 
-.catalog-item.expanded {
-    z-index: 20;
-}
-
-.catalog-item.expanded .catalog-card {
-    position: fixed;
-    width: 80vw;
-    height: 80vh;
-    max-width: 1200px;
-    max-height: 840px;
-    top: 50%;
-    left: 50%;
-    transform: translate3d(-50%, -50%, 0) scale(0.38);
-    z-index: 21;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-}
-
-.catalog-item.expanded .card-content {
-    overflow: auto;
-}
-
-.catalog-item.expanded.expanded-visible .catalog-card {
-    transform: translate3d(-50%, -50%, 0) scale(1);
+.close-card:hover {
+    background: var(--accent-strong);
 }
 
 .catalog-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.6);
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.35s ease;
-    z-index: 15;
+    z-index: 900;
     pointer-events: none;
 }
 
@@ -263,15 +348,20 @@ main {
     pointer-events: auto;
 }
 
-.catalog-item:hover:not(.expanded) .catalog-card {
-    transform: scale(1.05);
-}
-
 @media (prefers-reduced-motion: reduce) {
-    .catalog-card,
+    .card,
+    .card-inner,
+    .card-front video,
     .catalog-item,
     .catalog-overlay {
         transition: none;
+    }
+}
+
+@media (hover: none), (pointer: coarse) {
+    .card.previewing:not(.active) {
+        transform: none;
+        box-shadow: none;
     }
 }
 
@@ -288,21 +378,30 @@ main {
         gap: 10px;
     }
 
+    nav ul {
+        flex-wrap: wrap;
+    }
+
     .catalog-grid {
         grid-template-columns: 1fr;
     }
 
-    .catalog-item.expanded .catalog-card {
+    .catalog-item {
+        min-height: 380px;
+    }
+
+    .card {
+        height: 380px;
+    }
+
+    .card.active {
         width: 92vw;
         height: 82vh;
     }
-}
 
-/* Legacy interaction (card1 flip) kept for future reuse.
-   .catalog-item.expanded .catalog-card {
-       transform: translate3d(-50%, -50%, 0) rotateY(-180deg);
-   }
-   .catalog-item:hover:not(.expanded) .catalog-card {
-       transform: translate3d(0, 0, 0) rotateY(-165deg);
-   }
-*/
+    .card-back {
+        justify-content: flex-start;
+        overflow: auto;
+        padding-top: 72px;
+    }
+}
