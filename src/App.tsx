@@ -22,6 +22,8 @@ import {
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { Group, Mesh } from "three";
 import * as THREE from "three";
+import ClothingShowroomPage from "./clothing-showroom/ClothingShowroomPage";
+import { NAVIGATE_EVENT, navigateTo } from "./navigation";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -86,14 +88,27 @@ function getServicePosition(index: number, activeIndex: number) {
 }
 
 function App() {
-  const pathname = window.location.pathname.replace(/\/+$/, "") || "/";
+  const [pathname, setPathname] = useState(() => window.location.pathname.replace(/\/+$/, "") || "/");
+
+  useEffect(() => {
+    const syncPathname = () => {
+      setPathname(window.location.pathname.replace(/\/+$/, "") || "/");
+    };
+
+    window.addEventListener("popstate", syncPathname);
+    window.addEventListener(NAVIGATE_EVENT, syncPathname);
+    return () => {
+      window.removeEventListener("popstate", syncPathname);
+      window.removeEventListener(NAVIGATE_EVENT, syncPathname);
+    };
+  }, []);
 
   if (pathname === "/website") {
     return <WebsitePage />;
   }
 
   if (pathname === "/website/3d-clothing") {
-    return <WebsiteProjectPage />;
+    return <ClothingShowroomPage />;
   }
 
   return <HomePage />;
@@ -228,32 +243,18 @@ function WebsitePage() {
   );
 }
 
-function WebsiteProjectPage() {
-  return (
-    <main className="website-page project-page">
-      <PageHeader />
-      <section className="project-hero" aria-labelledby="project-title">
-        <span className="eyebrow">ZAINLAB / WEBSITE PROJECT</span>
-        <h1 id="project-title">3D Clothing</h1>
-        <p>Interactive fashion presentation and digital garment experience.</p>
-        <a className="project-back" href="/website">
-          Back to Website
-        </a>
-      </section>
-      <section className="project-placeholder" aria-label="Future 3D clothing showcase">
-        <div>
-          <span>Future Showcase Area</span>
-          <p>Reserved for the interactive 3D clothing experience.</p>
-        </div>
-      </section>
-    </main>
-  );
-}
-
 function PageHeader() {
   return (
     <header className="page-header">
-      <a className="brand" href="/" aria-label="Back to ZainLab home">
+      <a
+        className="brand"
+        href="/"
+        aria-label="Back to ZainLab home"
+        onClick={(event) => {
+          event.preventDefault();
+          navigateTo("/");
+        }}
+      >
         ZAINLAB
       </a>
       <nav className="nav-links" aria-label="Page navigation">
