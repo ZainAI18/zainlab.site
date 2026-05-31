@@ -70,12 +70,36 @@ const footerGroups = [
   ["Links", ["Work", "Blog", "Contact"]],
 ];
 
+const websiteFolders = [
+  { name: "3D Clothing", path: "/website/3d-clothing", active: true },
+  ...Array.from({ length: 11 }, (_, index) => ({
+    name: "Coming Soon",
+    path: "",
+    active: false,
+    id: index + 2,
+  })),
+];
+
 function getServicePosition(index: number, activeIndex: number) {
   const offset = (index - activeIndex + services.length) % services.length;
   return offset === 0 ? "front" : offset === 1 ? "right" : "left";
 }
 
 function App() {
+  const pathname = window.location.pathname.replace(/\/+$/, "") || "/";
+
+  if (pathname === "/website") {
+    return <WebsitePage />;
+  }
+
+  if (pathname === "/website/3d-clothing") {
+    return <WebsiteProjectPage />;
+  }
+
+  return <HomePage />;
+}
+
+function HomePage() {
   const workRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
 
@@ -164,6 +188,84 @@ function App() {
   );
 }
 
+function WebsitePage() {
+  return (
+    <main className="website-page">
+      <PageHeader />
+      <section className="website-hero" aria-labelledby="website-title">
+        <div className="website-page-glow" />
+        <span className="eyebrow">ZAINLAB / WEBSITE SYSTEM</span>
+        <h1 id="website-title">Website</h1>
+        <p>Premium digital experiences built for brands that want to stand out.</p>
+      </section>
+      <section className="website-folders" aria-label="Website project folders">
+        {websiteFolders.map((folder, index) => {
+          const folderContent = (
+            <>
+              <span className="folder-tab" />
+              <span className="folder-index">{String(index + 1).padStart(2, "0")}</span>
+              <h2>{folder.name}</h2>
+              <p>{folder.active ? "Open project" : "Future collection"}</p>
+            </>
+          );
+
+          return folder.active ? (
+            <a className="website-folder" href={folder.path} key={`${folder.name}-${index}`}>
+              {folderContent}
+            </a>
+          ) : (
+            <article
+              className="website-folder website-folder-disabled"
+              aria-disabled="true"
+              key={`${folder.name}-${index}`}
+            >
+              {folderContent}
+            </article>
+          );
+        })}
+      </section>
+    </main>
+  );
+}
+
+function WebsiteProjectPage() {
+  return (
+    <main className="website-page project-page">
+      <PageHeader />
+      <section className="project-hero" aria-labelledby="project-title">
+        <span className="eyebrow">ZAINLAB / WEBSITE PROJECT</span>
+        <h1 id="project-title">3D Clothing</h1>
+        <p>Interactive fashion presentation and digital garment experience.</p>
+        <a className="project-back" href="/website">
+          Back to Website
+        </a>
+      </section>
+      <section className="project-placeholder" aria-label="Future 3D clothing showcase">
+        <div>
+          <span>Future Showcase Area</span>
+          <p>Reserved for the interactive 3D clothing experience.</p>
+        </div>
+      </section>
+    </main>
+  );
+}
+
+function PageHeader() {
+  return (
+    <header className="page-header">
+      <a className="brand" href="/" aria-label="Back to ZainLab home">
+        ZAINLAB
+      </a>
+      <nav className="nav-links" aria-label="Page navigation">
+        <a href="/">Home</a>
+        <a href="/#services">Services</a>
+        <a href="/#work">Work</a>
+        <a href="/#contact">Contact</a>
+      </nav>
+    </header>
+  );
+}
+
 function Header() {
   return (
     <header className="site-header">
@@ -236,9 +338,20 @@ function Intro() {
 function Services() {
   const [activeService, setActiveService] = useState(1);
   const [isAttentionActive, setIsAttentionActive] = useState(false);
+  const [hoveredSide, setHoveredSide] = useState<"left" | "right" | null>(null);
   const carouselRef = useRef<HTMLDivElement>(null);
   const isInteractingRef = useRef(false);
   const resumeAttentionTimeoutRef = useRef<number | null>(null);
+
+  const scheduleAttentionResume = () => {
+    if (resumeAttentionTimeoutRef.current) {
+      window.clearTimeout(resumeAttentionTimeoutRef.current);
+    }
+
+    resumeAttentionTimeoutRef.current = window.setTimeout(() => {
+      isInteractingRef.current = false;
+    }, 2000);
+  };
 
   const rotateServices = (direction: "left" | "right") => {
     pauseAttention();
@@ -252,13 +365,7 @@ function Services() {
     isInteractingRef.current = true;
     setIsAttentionActive(false);
 
-    if (resumeAttentionTimeoutRef.current) {
-      window.clearTimeout(resumeAttentionTimeoutRef.current);
-    }
-
-    resumeAttentionTimeoutRef.current = window.setTimeout(() => {
-      isInteractingRef.current = false;
-    }, 2000);
+    scheduleAttentionResume();
   };
 
   useEffect(() => {
@@ -302,13 +409,8 @@ function Services() {
     node.style.setProperty("--service-tilt-y", "0deg");
     node.style.setProperty("--service-side-tilt-x", "0deg");
     node.style.setProperty("--service-side-tilt-y", "0deg");
-    if (resumeAttentionTimeoutRef.current) {
-      window.clearTimeout(resumeAttentionTimeoutRef.current);
-    }
-
-    resumeAttentionTimeoutRef.current = window.setTimeout(() => {
-      isInteractingRef.current = false;
-    }, 2000);
+    setHoveredSide(null);
+    scheduleAttentionResume();
   };
 
   return (
@@ -327,15 +429,6 @@ function Services() {
           aria-label="Services carousel"
           onPointerMove={setCarouselTilt}
           onPointerLeave={resetCarouselTilt}
-          onClick={(event) => {
-            const stage = event.currentTarget.getBoundingClientRect();
-            const x = event.clientX - stage.left;
-            const leftZone = stage.width * 0.36;
-            const rightZone = stage.width * 0.64;
-
-            if (x < leftZone) rotateServices("left");
-            if (x > rightZone) rotateServices("right");
-          }}
         >
           <div className="service-carousel-title">Drag • Rotate • Explore</div>
           <div className="service-carousel-stage">
@@ -349,14 +442,18 @@ function Services() {
                   href={service.path}
                   key={service.title}
                   data-direction={direction ?? undefined}
-                  data-attention={isAttentionActive && direction ? "true" : undefined}
-                  onPointerEnter={pauseAttention}
-                  onFocus={pauseAttention}
-                  onClick={(event) => event.stopPropagation()}
+                  data-attention={(hoveredSide === position || (!hoveredSide && isAttentionActive && direction)) ? "true" : undefined}
+                  onClick={(event) => {
+                    if (direction) {
+                      event.preventDefault();
+                      rotateServices(direction);
+                    }
+                  }}
                   role={direction ? "button" : undefined}
                   tabIndex={direction ? 0 : undefined}
                   onKeyDown={(event) => {
                     if (direction && (event.key === "Enter" || event.key === " ")) {
+                      event.preventDefault();
                       rotateServices(direction);
                     }
                   }}
@@ -368,10 +465,34 @@ function Services() {
                     →
                   </span>
                   <p>{service.description}</p>
-                  <span className="service-hint">Click to Enter</span>
                 </a>
               );
             })}
+            {(["left", "right"] as const).map((side) => (
+              <button
+                className={`service-hit-area service-hit-area-${side}`}
+                type="button"
+                key={side}
+                aria-label={`Bring ${side} service card to front`}
+                onPointerEnter={() => {
+                  pauseAttention();
+                  setHoveredSide(side);
+                }}
+                onPointerLeave={() => {
+                  setHoveredSide(null);
+                  scheduleAttentionResume();
+                }}
+                onFocus={() => {
+                  pauseAttention();
+                  setHoveredSide(side);
+                }}
+                onBlur={() => {
+                  setHoveredSide(null);
+                  scheduleAttentionResume();
+                }}
+                onClick={() => rotateServices(side)}
+              />
+            ))}
           </div>
           <div className="carousel-dots" aria-hidden="true">
             {services.map((service, index) => (
