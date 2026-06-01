@@ -1,4 +1,4 @@
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Float, Icosahedron, Stars } from "@react-three/drei";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -194,7 +194,6 @@ function HomePage() {
     <main>
       <Header />
       <Hero />
-      <Intro />
       <Services />
       <Work workRef={workRef} trackRef={trackRef} />
       <WhyChoose />
@@ -293,44 +292,10 @@ function Hero() {
       <div className="hero-content">
         <h1 className="hero-title">ZAINLAB</h1>
         <p className="hero-kicker">AI · DESIGN · MOTION</p>
-        <a className="scroll-cue" href="#intro" aria-label="Scroll to intro">
+        <a className="scroll-cue" href="#services" aria-label="Scroll to services">
           <span>Scroll to explore</span>
           <Mouse size={25} />
         </a>
-      </div>
-    </section>
-  );
-}
-
-function Intro() {
-  return (
-    <section className="screen intro" id="intro">
-      <SceneCanvas variant="dust" />
-      <div className="section-grid">
-        <div className="section-copy reveal">
-          <h2>
-            Your Ideas.
-            <br />
-            Become <span>Extraordinary.</span>
-          </h2>
-          <p>
-            We combine AI, creativity and cutting-edge technology to craft digital
-            experiences that inspire and perform.
-          </p>
-          <TextButton>Discover our story</TextButton>
-        </div>
-        <div className="floating-cards" aria-label="ZainLab capabilities">
-          {services.map((service, index) => {
-            const Icon = service.icon;
-            return (
-              <article className={`glass-card card-${index + 1} reveal`} key={service.title}>
-                <Icon size={28} />
-                <h3>{service.title}</h3>
-                <p>{index === 0 ? "Bring ideas to life" : index === 1 ? "Showcase products beautifully" : "Build powerful digital presence"}</p>
-              </article>
-            );
-          })}
-        </div>
       </div>
     </section>
   );
@@ -522,19 +487,27 @@ function Work({
           <TextButton>Explore all work</TextButton>
         </div>
         <div className="project-track" ref={trackRef}>
-          {projects.map(([id, title, type, visual]) => (
-            <article className={`project-card ${visual}`} key={title}>
+          {projects.map(([id, title, type, visual], index) => {
+            const hasProjectImage = index === 0 || index === 1;
+            const isComingSoon = index >= 2;
+            const projectImageClass =
+              index === 0 ? "project-card-image project-card-image-01" : index === 1 ? "project-card-image project-card-image-02" : "";
+
+            return (
+            <article className={`project-card ${visual} ${projectImageClass} ${isComingSoon ? "project-card-coming-soon" : ""}`} key={title}>
               <div className="project-visual">
-                <span className="visual-orbit" />
-                <span className="visual-core" />
+                {hasProjectImage ? <span className="project-image-fill" aria-hidden="true" /> : null}
+                {hasProjectImage || isComingSoon ? null : <span className="visual-orbit" />}
+                {hasProjectImage || isComingSoon ? null : <span className="visual-core" />}
               </div>
-              <div className="project-meta">
+              <div className="project-meta" aria-hidden={hasProjectImage ? "true" : undefined}>
                 <span>{id}</span>
-                <h3>{title}</h3>
-                <p>{type}</p>
+                <h3>{isComingSoon ? "COMING SOON" : title}</h3>
+                <p>{isComingSoon ? "Future project" : type}</p>
               </div>
             </article>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>
@@ -635,9 +608,53 @@ function TextButton({ children, compact = false }: { children: React.ReactNode; 
   );
 }
 
+function usePrefersReducedMotion() {
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+  useEffect(() => {
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const updatePreference = () => setPrefersReducedMotion(media.matches);
+
+    updatePreference();
+    media.addEventListener("change", updatePreference);
+    return () => media.removeEventListener("change", updatePreference);
+  }, []);
+
+  return prefersReducedMotion;
+}
+
+function getHeroParticleCount() {
+  if (typeof window === "undefined") return 900;
+
+  const hardware = navigator.hardwareConcurrency || 8;
+  const memory = (navigator as Navigator & { deviceMemory?: number }).deviceMemory || 8;
+  const isConstrainedDevice = hardware <= 4 || memory <= 4;
+
+  if (window.matchMedia("(max-width: 760px)").matches) return 560;
+  return isConstrainedDevice ? 700 : 900;
+}
+
+function useHeroParticleCount() {
+  const [particleCount, setParticleCount] = useState(getHeroParticleCount);
+
+  useEffect(() => {
+    const mobileQuery = window.matchMedia("(max-width: 760px)");
+    const updateCount = () => setParticleCount(getHeroParticleCount());
+
+    updateCount();
+    mobileQuery.addEventListener("change", updateCount);
+    return () => mobileQuery.removeEventListener("change", updateCount);
+  }, []);
+
+  return particleCount;
+}
+
 function SceneCanvas({ variant }: { variant: "hero" | "dust" | "crystal" | "wave" }) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(variant === "hero");
+  const prefersReducedMotion = usePrefersReducedMotion();
+  const shouldAnimate = isVisible && !prefersReducedMotion;
+  const frameLoop = !isVisible ? "never" : prefersReducedMotion ? "demand" : "always";
 
   useEffect(() => {
     const node = wrapperRef.current;
@@ -659,14 +676,14 @@ function SceneCanvas({ variant }: { variant: "hero" | "dust" | "crystal" | "wave
       <Canvas
         camera={{ position: [0, 0, 7], fov: 48 }}
         dpr={[1, 1.25]}
-        frameloop={isVisible ? "always" : "never"}
+        frameloop={frameLoop}
         gl={{ antialias: false, powerPreference: "high-performance" }}
       >
         <color attach="background" args={["#030305"]} />
         <ambientLight intensity={0.7} />
         <pointLight position={[4, 3, 5]} intensity={variant === "crystal" ? 8 : 4} color="#8b5cf6" />
         <pointLight position={[-5, -2, 3]} intensity={2.8} color="#4f8cff" />
-        {variant === "hero" && <HeroObjects />}
+        {variant === "hero" && <HeroObjects isActive={shouldAnimate} />}
         {variant === "dust" && <DustField />}
         {variant === "crystal" && <CrystalCore />}
         {variant === "wave" && <WaveField />}
@@ -675,14 +692,54 @@ function SceneCanvas({ variant }: { variant: "hero" | "dust" | "crystal" | "wave
   );
 }
 
-function HeroObjects() {
+function HeroObjects({ isActive }: { isActive: boolean }) {
+  const { gl } = useThree();
   const group = useRef<Group>(null);
-  const particles = useMemo(() => makeParticles(900, 9, 2.6), []);
+  const particleCount = useHeroParticleCount();
+  const particles = useMemo(() => makeParticles(particleCount, 9, 2.6), [particleCount]);
+  const targetPointer = useRef({ x: 0, y: 0 });
+  const smoothPointer = useRef({ x: 0, y: 0 });
+  const latestPointer = useRef({ x: 0, y: 0 });
+  const pointerFrame = useRef<number | null>(null);
 
-  useFrame(({ clock, pointer }) => {
+  useEffect(() => {
+    if (!isActive) return undefined;
+
+    const updatePointer = () => {
+      pointerFrame.current = null;
+      const rect = gl.domElement.getBoundingClientRect();
+      if (rect.width === 0 || rect.height === 0) return;
+
+      targetPointer.current.x = THREE.MathUtils.clamp(((latestPointer.current.x - rect.left) / rect.width) * 2 - 1, -1, 1);
+      targetPointer.current.y = THREE.MathUtils.clamp(-(((latestPointer.current.y - rect.top) / rect.height) * 2 - 1), -1, 1);
+    };
+
+    const handlePointerMove = (event: PointerEvent) => {
+      latestPointer.current.x = event.clientX;
+      latestPointer.current.y = event.clientY;
+
+      if (pointerFrame.current === null) {
+        pointerFrame.current = window.requestAnimationFrame(updatePointer);
+      }
+    };
+
+    window.addEventListener("pointermove", handlePointerMove, { passive: true });
+    return () => {
+      window.removeEventListener("pointermove", handlePointerMove);
+      if (pointerFrame.current !== null) {
+        window.cancelAnimationFrame(pointerFrame.current);
+        pointerFrame.current = null;
+      }
+    };
+  }, [gl, isActive]);
+
+  useFrame(({ clock }, delta) => {
     if (!group.current) return;
-    group.current.rotation.y = pointer.x * 0.12 + clock.elapsedTime * 0.025;
-    group.current.rotation.x = pointer.y * 0.08;
+    const damping = 1 - Math.exp(-delta * 8);
+    smoothPointer.current.x = THREE.MathUtils.lerp(smoothPointer.current.x, targetPointer.current.x, damping);
+    smoothPointer.current.y = THREE.MathUtils.lerp(smoothPointer.current.y, targetPointer.current.y, damping);
+    group.current.rotation.y = smoothPointer.current.x * 0.12 + clock.elapsedTime * 0.025;
+    group.current.rotation.x = smoothPointer.current.y * 0.08;
   });
 
   return (
