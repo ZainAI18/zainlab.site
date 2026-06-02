@@ -27,8 +27,14 @@ html {
 }
 
 html.is-clothing-returning,
-html.is-clothing-returning body {
+html.is-clothing-returning body,
+html.is-project-preview-open,
+html.is-project-preview-open body {
   overflow: hidden;
+}
+
+html.is-project-preview-open body {
+  overscroll-behavior: none;
 }
 
 body {
@@ -679,8 +685,7 @@ main {
 
 .work {
   min-height: 100vh;
-  overflow: hidden;
-  contain: paint;
+  overflow: visible;
 }
 
 .work-layout {
@@ -806,6 +811,61 @@ main {
   background-image:
     linear-gradient(180deg, rgba(5, 5, 6, 0.02), rgba(5, 5, 6, 0.08)),
     url("/work-website-experience.png");
+}
+
+.project-card-preview-source {
+  z-index: 6;
+  overflow: visible;
+}
+
+.project-hover-edge {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 5;
+  width: 2px;
+  background: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.86), transparent);
+  box-shadow:
+    0 0 22px rgba(255, 255, 255, 0.36),
+    0 0 46px rgba(79, 140, 255, 0.32);
+  opacity: 0;
+  pointer-events: none;
+  transform-origin: center;
+}
+
+.project-hover-preview {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 4;
+  width: 100vw;
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 22px;
+  background: #050506;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.06),
+    0 26px 90px rgba(0, 0, 0, 0.5),
+    0 0 64px rgba(79, 140, 255, 0.13);
+  opacity: 0;
+  pointer-events: none;
+  transform: scaleX(0.015);
+  transform-origin: center center;
+  will-change: transform, opacity;
+}
+
+.project-hover-preview__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 42%;
+  transform-origin: center;
+  opacity: 0.18;
+  filter: blur(6px);
+  transform: scale(1.018);
+  will-change: transform, opacity, filter;
 }
 
 .project-card-coming-soon {

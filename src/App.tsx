@@ -125,10 +125,22 @@ function HomePage() {
       wheelMultiplier: 0.8,
     });
 
+    const handleProjectPreviewScrollLock = (event: Event) => {
+      const locked = Boolean((event as CustomEvent<{ locked?: boolean }>).detail?.locked);
+      document.documentElement.classList.toggle("is-project-preview-open", locked);
+
+      if (locked) {
+        lenis.stop();
+      } else {
+        lenis.start();
+      }
+    };
+
     const tick = (time: number) => {
       lenis.raf(time * 1000);
     };
 
+    window.addEventListener("zainlab:project-preview-scroll-lock", handleProjectPreviewScrollLock);
     gsap.ticker.add(tick);
     gsap.ticker.lagSmoothing(0);
 
@@ -183,6 +195,8 @@ function HomePage() {
     });
 
     return () => {
+      window.removeEventListener("zainlab:project-preview-scroll-lock", handleProjectPreviewScrollLock);
+      document.documentElement.classList.remove("is-project-preview-open");
       media.revert();
       lenis.destroy();
       gsap.ticker.remove(tick);
@@ -488,29 +502,160 @@ function Work({
         </div>
         <div className="project-track" ref={trackRef}>
           {projects.map(([id, title, type, visual], index) => {
-            const hasProjectImage = index === 0 || index === 1;
-            const isComingSoon = index >= 2;
-            const projectImageClass =
-              index === 0 ? "project-card-image project-card-image-01" : index === 1 ? "project-card-image project-card-image-02" : "";
-
             return (
-            <article className={`project-card ${visual} ${projectImageClass} ${isComingSoon ? "project-card-coming-soon" : ""}`} key={title}>
-              <div className="project-visual">
-                {hasProjectImage ? <span className="project-image-fill" aria-hidden="true" /> : null}
-                {hasProjectImage || isComingSoon ? null : <span className="visual-orbit" />}
-                {hasProjectImage || isComingSoon ? null : <span className="visual-core" />}
-              </div>
-              <div className="project-meta" aria-hidden={hasProjectImage ? "true" : undefined}>
-                <span>{id}</span>
-                <h3>{isComingSoon ? "COMING SOON" : title}</h3>
-                <p>{isComingSoon ? "Future project" : type}</p>
-              </div>
-            </article>
+              <ProjectCard id={id} title={title} type={type} visual={visual} index={index} key={title} />
             );
           })}
         </div>
       </div>
     </section>
+  );
+}
+
+function ProjectCard({
+  id,
+  title,
+  type,
+  visual,
+  index,
+}: {
+  id: string;
+  title: string;
+  type: string;
+  visual: string;
+  index: number;
+}) {
+  const cardRef = useRef<HTMLElement | null>(null);
+  const previewTimeline = useRef<gsap.core.Timeline | null>(null);
+  const scrollLockedRef = useRef(false);
+  const hasProjectImage = index === 0 || index === 1;
+  const isComingSoon = index >= 2;
+  const hasHoverPreview = index === 0;
+  const projectImageClass =
+    index === 0 ? "project-card-image project-card-image-01" : index === 1 ? "project-card-image project-card-image-02" : "";
+
+  const setPreviewScrollLocked = (locked: boolean) => {
+    if (scrollLockedRef.current === locked) return;
+
+    scrollLockedRef.current = locked;
+    window.dispatchEvent(new CustomEvent("zainlab:project-preview-scroll-lock", { detail: { locked } }));
+  };
+
+  const syncPreviewGeometry = () => {
+    const card = cardRef.current;
+    const preview = card?.querySelector<HTMLElement>(".project-hover-preview");
+    const edge = card?.querySelector<HTMLElement>(".project-hover-edge");
+    if (!card || !preview || !edge) return;
+
+    const rect = card.getBoundingClientRect();
+    const viewportWidth = window.innerWidth;
+    const originX = rect.left + rect.width / 2;
+
+    gsap.set(preview, {
+      left: -rect.left,
+      width: viewportWidth,
+      height: rect.height,
+      transformOrigin: `${originX}px 50%`,
+    });
+    gsap.set(edge, {
+      left: rect.width / 2,
+    });
+  };
+
+  useEffect(() => {
+    const card = cardRef.current;
+    if (!card || !hasHoverPreview) return undefined;
+
+    const ctx = gsap.context(() => {
+      const preview = card.querySelector(".project-hover-preview");
+      const previewImage = card.querySelector(".project-hover-preview__image");
+      const edge = card.querySelector(".project-hover-edge");
+
+      previewTimeline.current = gsap
+        .timeline({
+          paused: true,
+          defaults: { ease: "power2.out" },
+          onReverseComplete: () => setPreviewScrollLocked(false),
+        })
+        .set(preview, {
+          opacity: 1,
+          x: 0,
+          xPercent: 0,
+          scaleX: 0.015,
+          scaleY: 1,
+        })
+        .set(previewImage, {
+          opacity: 0.18,
+          filter: "blur(6px)",
+          scale: 1.018,
+        })
+        .set(edge, {
+          opacity: 0,
+          scaleY: 0.72,
+        })
+        .to(edge, { opacity: 1, scaleY: 1, duration: 0.28 }, 0)
+        .to(preview, { scaleX: 1, duration: 1.05 }, 0.02)
+        .to(previewImage, { opacity: 1, filter: "blur(0px)", scale: 1, duration: 0.78 }, 0.18);
+    }, card);
+
+    return () => {
+      setPreviewScrollLocked(false);
+      previewTimeline.current = null;
+      ctx.revert();
+    };
+  }, [hasHoverPreview]);
+
+  useEffect(() => {
+    if (!hasHoverPreview) return undefined;
+
+    const handleResize = () => {
+      if (previewTimeline.current?.progress()) {
+        syncPreviewGeometry();
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  });
+
+  const openPreview = () => {
+    syncPreviewGeometry();
+    setPreviewScrollLocked(true);
+    previewTimeline.current?.play();
+  };
+
+  const closePreview = () => {
+    previewTimeline.current?.reverse();
+  };
+
+  return (
+    <article
+      className={`project-card ${visual} ${projectImageClass} ${isComingSoon ? "project-card-coming-soon" : ""} ${
+        hasHoverPreview ? "project-card-preview-source" : ""
+      }`}
+      onPointerEnter={hasHoverPreview ? openPreview : undefined}
+      onPointerLeave={hasHoverPreview ? closePreview : undefined}
+      ref={cardRef}
+    >
+      <div className="project-visual">
+        {hasProjectImage ? <span className="project-image-fill" aria-hidden="true" /> : null}
+        {hasProjectImage || isComingSoon ? null : <span className="visual-orbit" />}
+        {hasProjectImage || isComingSoon ? null : <span className="visual-core" />}
+      </div>
+      <div className="project-meta" aria-hidden={hasProjectImage ? "true" : undefined}>
+        <span>{id}</span>
+        <h3>{isComingSoon ? "COMING SOON" : title}</h3>
+        <p>{isComingSoon ? "Future project" : type}</p>
+      </div>
+      {hasHoverPreview ? (
+        <>
+          <span className="project-hover-edge" aria-hidden="true" />
+          <div className="project-hover-preview" aria-hidden="true">
+            <img className="project-hover-preview__image" src="/work-3d-clothing-hover-preview.png" alt="" />
+          </div>
+        </>
+      ) : null}
+    </article>
   );
 }
 
